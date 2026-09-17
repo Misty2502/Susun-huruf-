@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Acak Kata & Coding Warna - Kelas 1 SD</title>
+    <style>
+        :root {
+            --bg-color: #f0f8ff;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --vokal-color: #ff4757; /* Merah */
+            --konsonan-color: #1e90ff; /* Biru */
+            --digraf-color: #2ed573; /* Hijau */
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #2f3542;
+            margin-bottom: 5px;
+        }
+
+        /* Legend / Petunjuk Warna */
+        .legend {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+        }
+
+        .bg-vokal { background-color: var(--vokal-color); color: white; }
+        .bg-konsonan { background-color: var(--konsonan-color); color: white; }
+        .bg-digraf { background-color: var(--digraf-color); color: white; }
+
+        /* Game Container */
+        .game-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: #ffa502;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .instruction {
+            font-size: 18px;
+            color: #57606f;
+            margin-bottom: 25px;
+        }
+
+        /* Slot Kartu */
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            min-height: 80px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .drop-zone-container {
+            background-color: #eef2f7;
+            border: 2px dashed #ced6e0;
+        }
+
+        /* Kartu Huruf */
+        .letter-card {
+            width: 65px;
+            height: 75px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 5px 0px rgba(0,0,0,0.2);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .letter-card:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0px rgba(0,0,0,0.2);
+        }
+
+        /* Control Buttons */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-check { background-color: #2ed573; color: white; }
+        .btn-check:hover { background-color: #26af5f; }
+        
+        .btn-reset { background-color: #ffa502; color: white; }
+        .btn-reset:hover { background-color: #eccc68; }
+
+        .btn-next { background-color: #70a1ff; color: white; display: none; }
+        .btn-next:hover { background-color: #1e90ff; }
+
+        /* Umpan Balik (Feedback) */
+        #feedback {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .correct { color: #2ed573; }
+        .wrong { color: #ff4757; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎮 Ayo Membaca & Menyusun Kata!</h1>
+        <p>Kelas 1 SD - Game Coding Warna</p>
+    </header>
+
+    <!-- Petunjuk Coding Warna -->
+    <div class="legend">
+        <div class="legend-item">
+            <div class="color-box bg-vokal"></div>
+            <span>Merah = Vokal (A,I,U,E,O)</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box bg-konsonan"></div>
+            <span>Biru = Konsonan</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box bg-digraf"></div>
+            <span>Hijau = Bunyi Khusus (NG/NY)</span>
+        </div>
+    </div>
+
+    <!-- Area Permainan -->
+    <div class="game-card">
+        <div id="level-badge" class="level-badge">Level 1</div>
+        <div class="instruction">Susunlah huruf-huruf di bawah ini menjadi kata yang benar!</div>
+
+        <!-- Jawaban Murid (Drop Area) -->
+        <p style="margin:0; font-size: 14px; color: #a4b0be;">Jawabanmu:</p>
+        <div id="answer-zone" class="card-container drop-zone-container"></div>
+
+        <!-- Pilihan Huruf Acak -->
+        <p style="margin:0; font-size: 14px; color: #a4b0be;">Klik huruf untuk memindahkan:</p>
+        <div id="letters-pool" class="card-container"></div>
+
+        <div id="feedback"></div>
+
+        <div class="btn-group">
+            <button class="btn-reset" onclick="resetCurrentWord()">🔄 Ulangi</button>
+            <button id="btn-check" class="btn-check" onclick="checkAnswer()">✔️ Periksa</button>
+            <button id="btn-next" class="btn-next" onclick="nextWord()">➡️ Kata Berikutnya</button>
+        </div>
+    </div>
+
+    <script>
+        // Database Kata berdasarkan Level Blueprint
+        const wordList = [
+            // Level 1: K-V + K-V
+            { target: "BUKU", level: "Level 1 (Mudah)", tokens: [
+                { text: "B", type: "konsonan" },
+                { text: "U", type: "vokal" },
+                { text: "K", type: "konsonan" },
+                { text: "U", type: "vokal" }
+            ]},
+            { target: "BATA", level: "Level 1 (Mudah)", tokens: [
+                { text: "B", type: "konsonan" },
+                { text: "A", type: "vokal" },
+                { text: "T", type: "konsonan" },
+                { text: "A", type: "vokal" }
+            ]},
+            // Level 2: Sedang (5-6 Huruf)
+            { target: "SEPATU", level: "Level 2 (Sedang)", tokens: [
+                { text: "S", type: "konsonan" },
+                { text: "E", type: "vokal" },
+                { text: "P", type: "konsonan" },
+                { text: "A", type: "vokal" },
+                { text: "T", type: "konsonan" },
+                { text: "U", type: "vokal" }
+            ]},
+            // Level 3: Tantangan Digraf (NG / NY)
+            { target: "BANGKU", level: "Level 3 (Tantangan)", tokens: [
+                { text: "B", type: "konsonan" },
+                { text: "A", type: "vokal" },
+                { text: "NG", type: "digraf" },
+                { text: "K", type: "konsonan" },
+                { text: "U", type: "vokal" }
+            ]}
+        ];
+
+        let currentWordIndex = 0;
+        let currentPool = [];
+        let currentAnswer = [];
+
+        function initGame() {
+            const currentData = wordList[currentWordIndex];
+            document.getElementById('level-badge').innerText = currentData.level;
+            
+            // Acak urutan kartu huruf
+            currentPool = [...currentData.tokens].sort(() => Math.random() - 0.5);
+            currentAnswer = [];
+            
+            document.getElementById('feedback').innerText = '';
+            document.getElementById('btn-check').style.display = 'inline-block';
+            document.getElementById('btn-next').style.display = 'none';
+
+            renderCards();
+        }
+
+        function renderCards() {
+            const poolContainer = document.getElementById('letters-pool');
+            const answerContainer = document.getElementById('answer-zone');
+
+            poolContainer.innerHTML = '';
+            answerContainer.innerHTML = '';
+
+            // Render kartu di area pilihan
+            currentPool.forEach((token, index) => {
+                const card = createCardElement(token, () => moveToAnswer(index));
+                poolContainer.appendChild(card);
+            });
+
+            // Render kartu di area jawaban
+            currentAnswer.forEach((token, index) => {
+                const card = createCardElement(token, () => moveToPool(index));
+                answerContainer.appendChild(card);
+            });
+        }
+
+        function createCardElement(token, onClickFunction) {
+            const card = document.createElement('div');
+            card.className = `letter-card bg-${token.type}`;
+            card.innerText = token.text;
+            card.onclick = onClickFunction;
+            return card;
+        }
+
+        function moveToAnswer(index) {
+            const item = currentPool.splice(index, 1)[0];
+            currentAnswer.push(item);
+            renderCards();
+        }
+
+        function moveToPool(index) {
+            const item = currentAnswer.splice(index, 1)[0];
+            currentPool.push(item);
+            renderCards();
+        }
+
+        function resetCurrentWord() {
+            initGame();
+        }
+
+        function checkAnswer() {
+            const targetWord = wordList[currentWordIndex].target;
+            const userWord = currentAnswer.map(item => item.text).join('');
+
+            const feedbackEl = document.getElementById('feedback');
+
+            if (userWord === targetWord) {
+                feedbackEl.className = "correct";
+                feedbackEl.innerText = "🎉 Hore, Benar! Kamu Hebat!";
+                document.getElementById('btn-check').style.display = 'none';
+                document.getElementById('btn-next').style.display = 'inline-block';
+            } else {
+                feedbackEl.className = "wrong";
+                feedbackEl.innerText = "❌ Masih kurang tepat. Coba susun lagi ya!";
+            }
+        }
+
+        function nextWord() {
+            currentWordIndex++;
+            if (currentWordIndex >= wordList.length) {
+                alert("Luar Biasa! Kamu sudah menyelesaikan semua level kata!");
+                currentWordIndex = 0; // Reset ke awal
+            }
+            initGame();
+        }
+
+        // Jalankan game saat halaman dimuat
+        window.onload = initGame;
+    </script>
+</body>
+</html>
